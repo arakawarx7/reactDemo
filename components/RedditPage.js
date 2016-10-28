@@ -1,4 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { receivePosts } from '../actions/redditActions';
 import RedditList from './RedditList';
 import styles from './RedditPage.scss'
 class RedditPage extends React.Component{
@@ -6,18 +8,18 @@ class RedditPage extends React.Component{
     super();
 
 
-  this.state = {
-    data:[]
-  };
+  // this.state = {
+  //   data:[]
+  // };
 
   this.onRedditData = this.onRedditData.bind(this)
 }
 
   onRedditData(data){
-    console.log("data",data)
-    const parsedRedditData = JSON.parse(data.currentTarget.response)
-    console.log('redditpage:', parsedRedditData);
-    this.setState({data: parsedRedditData.data.children});
+    const { dispatch } = this.props;
+    const parsedRedditData = JSON.parse(data.currentTarget.response).data.children
+    dispatch(receivePosts(parsedRedditData));
+    //this.setState({data: parsedRedditData.data.children});
   }
 
 loadDataFromReddit(){
@@ -26,12 +28,13 @@ loadDataFromReddit(){
   console.log(this.props.redditUrl);
   oReq.addEventListener('load', this.onRedditData);
   oReq.addEventListener('error', this.onRedditData);
-  oReq.open('GET', this.props.redditUrl);
+  oReq.open('GET',"http://www.reddit.com/r/dogs.json");
   oReq.send();
 
 }
 
 componentWillMount() {
+  console.log('this.props',this.props);
   this.loadDataFromReddit()
 }
 
@@ -39,7 +42,7 @@ componentWillMount() {
     return(
       <div className={styles.RedditPage}>
         <h1>Reddit Page</h1>
-        <RedditList data={this.state.data}/>
+        <RedditList data={this.props.data}/>
       </div>
     )
   }
@@ -49,8 +52,13 @@ RedditPage.defaultProp = {
   data: React.PropTypes.array,
 }
 
-RedditPage.defaultProp = {
-  data: [],
-}
 
-export default RedditPage;
+const mapStateToProp = (state, ownProps) => {
+  const { redditPostReducer } = state;
+  return {
+    data:redditPostReducer.toJS()
+  }
+}
+export default connect(
+mapStateToProp
+  )(RedditPage);

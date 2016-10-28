@@ -1,5 +1,7 @@
 import React from 'react';
+import Footer from './components/static/footer'
 import RedditPage from './components/RedditPage';
+import {Link} from 'react-router';
 // const data = [
 //     { id:1, title: 'Cat are lazy AF', author: 'aaron'},
 //     { id:2, title: 'dog are cool AF', author: 'tim'},
@@ -11,9 +13,14 @@ class App extends React.Component{
   render(){
     return(
       <div>
-      <RedditPage
-      redditUrl='https://www.reddit.com/r/webdev.json'
-      />
+        <ul role='nav'>
+          <li><Link to='/'>Home</Link></li>
+          <li><Link to='/about'>About</Link></li>
+        </ul>
+          <div>
+            {this.props.children}
+          </div>
+           <Footer />
       </div>
     )
   }

@@ -4,11 +4,12 @@ import RedditItem from './RedditItem'
 class RedditList extends React.Component{
   render(){
     console.log('this.props.data',this.props.data)
-    const redditListNode = this.props.data.map((dataItem)=>{
+    const redditListNode = this.props.data.map((dataItem,index)=>{
       console.log('dataItem', dataItem)
       return(
         <RedditItem
            title={dataItem.data.title}
+           index={index}
            key={dataItem.data.id}/>
       )
     })
